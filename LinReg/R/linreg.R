@@ -11,20 +11,30 @@ linreg <- setRefClass("linreg",
                         y <- "vector",
                         coef_hat <- "matrix",
                         y_hat <- "vector",
-                        res_hat <- "vector",
-                        df <- "numeric"
-                        ), 
+                        resids <- "vector",
+                        df <- "numeric",
+                        rsqrd <- "numeric",
+                        corrMatrix <- "matrix",
+                        fstat <- "vector",
+                        sigma2 <- "numeric"
+                      ), 
                       methods = list(
                         initialize <- function(formula,data){
-                          x <<- as.matrix(data)
-                          y <<- as.vector()
+                          #model.matrix
+                          x <<- model.matrix(formula, data)
+                          y <<- as.vector(all.vars(model.matrix(x)[,1]))
                           #solving for the estimation coefficients.
                           #should be changed to QRd
-                          coef_hat <<- as.matrix(solve(t(x)%*%x)%*%t(x)%*%y)
-                          y_hat <<- as.vector()
-                          res_hat <<- as.vector(y-y_hat)
-                          df <<- as.numeric()
-                          },
+                          #for calculating the summary stat and the coefficients 
+                          coef_hat <<- as.matrix(solve(t(x)%*%x)%*%t(x)%*%y) 
+                          y_hat <<- as.vector(x%*%coef_hat)
+                          resids <<- as.vector(y-y_hat) #for calculating the summary stat
+                          df <<- as.numeric(nrow(x)-ncol(x)) #for calculating the summary stat
+                          sigma2 <<- as.numeric() #for calculating the summary stat
+                          fstat <<- as.vector() #for calculating the summary stat
+                          rsqrd <<- as.numeric() #for calculating the summary stat
+                          corrMatrix <<- as.matrix() #for calculating the summary stat
+                        },
                         #use inline (\n) for printing. 
                         #cat does not do it by default
                         ### 'fill' and label lines:
@@ -33,12 +43,14 @@ linreg <- setRefClass("linreg",
                         print <- function(){cat()},
                         coef <- function(){
                           coef <- as.vector(coef_hat)
-                        names(coef) <- rownames(coef_hat)
-                        return(coef)
+                          names(coef) <- colnames(x)
+                          return(coef)
                         },
-                        plot <- function(){return()},
+                        plot <- function(){
+                          require("ggplot2")
+                          return()},
                         summary <- function(){return()},
                         resid <- function(){return(res_hat)},
                         pred <- function(){return(y_hat)}
-                        )
                       )
+)
