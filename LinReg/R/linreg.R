@@ -1,9 +1,6 @@
 rm(list = ls())
 
 linreg <- setRefClass("linreg",
-                      contains = "data", #fill the characteristics of the data here
-                      #what are the inheritence features from the parent calss.
-                      # what types of input the class can inherit. (I think)
                       fields  = list(
                         formula <-"formula",
                         data <- "data.frame",
