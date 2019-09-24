@@ -20,17 +20,3 @@ linreg <- setRefClass("linreg",
                         pred <- function(){}
                         )
                       )
-#linreg <- function(x,y){
-  #setting up the elements of matrix
-  #x <- as.matrix(x)
-  #y<- as.vector(y)
-  #nc <- NCOL(x)
-  #nr <- length(y)
-  #QRdec <- qr(x)
-  # compute (x'x)^(-1) x'y
-  #coeff <- solve.qr(QRdec,y)
-  # compute the degrees of freedom
-  #DegFr <- nrow(x)-nrow(y)
-  # compute standard deviation
-  #StDev <- sum((y- x%*%coeff)**2)/DegFr}
-# compute 
