@@ -21,6 +21,8 @@ linreg <- setRefClass("linreg",
                       methods = list(
                         initialize <- function(formula,data){
                           #model.matrix
+                          stopifnot(is.data.frame(data))
+                          stopifnot(all.vars(formula %in% colnames(data)))
                           x <<- model.matrix(formula, data)
                           y <<- as.vector(all.vars(model.matrix(x)[,1]))
                           #solving for the estimation coefficients.
