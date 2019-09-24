@@ -1,13 +1,13 @@
 rm(list = ls())
 
 linreg <- setRefClass("linreg",
-                      contains = "input", #fill the characteristics of the data here
+                      contains = "data", #fill the characteristics of the data here
                       #what are the inheritence features from the parent calss.
                       # what types of input the class can inherit. (I think)
                       fields  = list(
                         formula <-"formula",
                         data <- "data.frame",
-                        x <- "matrix",
+                        X <- "matrix",
                         y <- "vector",
                         coef_hat <- "matrix",
                         y_hat <- "vector",
@@ -23,8 +23,8 @@ linreg <- setRefClass("linreg",
                           #model.matrix
                           stopifnot(is.data.frame(data))
                           stopifnot(all.vars(formula %in% colnames(data)))
-                          x <<- model.matrix(formula, data)
-                          y <<- as.vector(all.vars(model.matrix(x)[,1]))
+                          X <<- model.matrix(formula, data)
+                          y <<- data[all.vars(forumla)[1]]
                           #solving for the estimation coefficients.
                           #should be changed to QRd
                           #for calculating the summary stat and the coefficients 
@@ -41,18 +41,17 @@ linreg <- setRefClass("linreg",
                         #cat does not do it by default
                         ### 'fill' and label lines:
                         #cat(paste(letters, 100* 1:26),"\n", fill = TRUE, labels = paste0("{", 1:10, "}:"))
-                        
                         print <- function(){cat()},
                         coef <- function(){
                           coef <- as.vector(coef_hat)
-                          names(coef) <- colnames(x)
+                          names(coef) <- colnames(X)
                           return(coef)
                         },
                         plot <- function(){
                           require("ggplot2")
                           return()},
                         summary <- function(){return()},
-                        resid <- function(){return(res_hat)},
+                        resid <- function(){return(resids)},
                         pred <- function(){return(y_hat)}
                       )
 )
