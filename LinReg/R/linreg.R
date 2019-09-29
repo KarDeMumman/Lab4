@@ -34,24 +34,25 @@ linreg <- setRefClass("linreg",
                           R <- matrix(0, m, m)
                           #Creating the projection matrix
                           V <- matrix(0, n,m)
-                          V[,1] = X[,1]
+                          V[,1] <- X[,1]
                           for (i in 2:m) {
-                            V[,i]= X[,i]
+                            V[,i]<- X[,i]
                             for (j in seq(1, (i-1),1)) {
                               #l2 normalization
-                              V[,i] = V[,i] - ((sum(V[,j]*V[,i]) /sum(V[,j]*V[,j])) * (V[, j]))
+                              V[,i] <- V[,i] - ((sum(V[,j]*V[,i]) /sum(V[,j]*V[,j])) * (V[,j]))
                               }
                           }
                           Q <- apply(V, 2, function(X) { X / sqrt(sum(X*X)) })
+                          #upper triangle(values are approximately zero)
                           R <- t(Q) %*% X
-                          yqt <- t(Q)%*%y
+                          yqt <- t(Q)%*%as.matrix(y)
                           #finding the betahats
                           coef_hat <<- as.matrix(backsolve(R,yqt)) 
                           
-                          y_hat <<- as.vector(x%*%coef_hat)
+                          y_hat <<- as.vector(X%*%coef_hat)
                           resids <<- as.vector(y-y_hat) #for calculating the summary stat
-                          df <<- as.numeric(nrow(x)-ncol(x)) #for calculating the summary stat
-                          sigma2 <<- as.numeric() #for calculating the summary stat
+                          degfree <<- as.numeric(nrow(X)-ncol(X)) #for calculating the summary stat
+                          sigma2 <<- as.numeric((t(resids)%*%as.matrix(resids))/degfree) #for calculating the summary stat
                           fstat <<- as.vector() #for calculating the summary stat
                           rsqrd <<- as.numeric() #for calculating the summary stat
                           corrMatrix <<- as.matrix() #for calculating the summary stat
