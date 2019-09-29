@@ -10,9 +10,11 @@ linreg <- setRefClass("linreg",
                         y_hat = "vector",
                         resids = "vector",
                         degfree = "numeric",
-                        #rsqrd <- "numeric",
                         sigma2 = "numeric",
-                        variance = "numeric"
+                        variance = "numeric",
+                        var_beta = "numeric",
+                        t_value = "numeric",
+                        p_value = "numeric"
                       ), 
                       methods = list(
                         initialize <- function(formula,data){
@@ -53,13 +55,14 @@ linreg <- setRefClass("linreg",
                           resids <<- as.vector(y-y_hat) #for calculating the summary stat
                           degfree <<- as.numeric(nrow(X)-ncol(X)) #for calculating the summary stat
                           sigma2 <<- as.numeric((t(resids)%*%as.matrix(resids))/degfree) #for calculating the summary stat
-                          variance <<- as.numeric(sqrt(sigma2),2) #finding the variance
-                          #tstat <<- as.vector()
-                          # rsqrd <<- as.numeric() #for calculating the summary stat
-                          #corrMatrix <<- as.matrix() #for calculating the summary stat
+                          variance <<- as.numeric(sqrt(sigma2))
+                          var_beta <<- as.numeric(sigma2 * solve((t(X)%*%X))) #finding the variance
+                          t_value <<- as.vector(beta_hat/(sqrt(diag(var_beta))))
+                          p_value <<- as.numeric(2*pt(-abs(t_value),degfree))#getting the p_values
                         },
                         coef <- function(){return(beta_hat)},
                         print <- function(){
+                          
                           print.default(format(coef()), print.gap = 2L,quote = FALSE)
                           cat("\n")
                           },
