@@ -9,11 +9,12 @@ linreg <- setRefClass("linreg",
                         coef_hat <- "matrix",
                         y_hat <- "vector",
                         resids <- "vector",
-                        df <- "numeric",
+                        degfree <- "numeric",
                         rsqrd <- "numeric",
                         corrMatrix <- "matrix",
                         fstat <- "vector",
-                        sigma2 <- "numeric"
+                        sigma2 <- "numeric",
+                        variance <- "numeric"
                       ), 
                       methods = list(
                         initialize <- function(formula,data){
@@ -47,37 +48,36 @@ linreg <- setRefClass("linreg",
                           R <- t(Q) %*% X
                           yqt <- t(Q)%*%as.matrix(y)
                           #finding the betahats
-                          beta_hat <<- as.matrix(backsolve(R,yqt)) 
+                          beta_hat <<- as.vector(backsolve(R,yqt)) 
                           #using the round(R) changes the values of beta_hat
-                          
+                          names(beta_hat) <<- colnames(X) 
                           y_hat <<- as.vector(X%*%beta_hat)
                           resids <<- as.vector(y-y_hat) #for calculating the summary stat
                           degfree <<- as.numeric(nrow(X)-ncol(X)) #for calculating the summary stat
                           sigma2 <<- as.numeric((t(resids)%*%as.matrix(resids))/degfree) #for calculating the summary stat
                           variance <<- as.numeric(sqrt(sigma2),2) #finding the variance
-                          rsqrd <<- as.numeric() #for calculating the summary stat
-                          corrMatrix <<- as.matrix() #for calculating the summary stat
+                          tstat <<- as.vector()
+                          # rsqrd <<- as.numeric() #for calculating the summary stat
+                          #corrMatrix <<- as.matrix() #for calculating the summary stat
                         },
-                        #use inline (\n) for printing. 
-                        #cat does not do it by default
-                        ### 'fill' and label lines:
-                        #cat(paste(letters, 100* 1:26),"\n", fill = TRUE, labels = paste0("{", 1:10, "}:"))
-                        print <- function(){cat("\n","Call:","\n",
-                                                paste0("linreg(formula = ",
-                                                       format(formula),", data = "
-                                                       , parse , ")\n\n ", sep = ""))
-                          cat("\n","Coefficients:","\n")
-                          (setNames(round(beta_hat[1:nrow(beta_hat)],2),rownames(beta_hat)))},
-                        coef <- function(){
-                          coef <- as.vector(coef_hat)
-                          names(coef) <- colnames(X)
-                          return(coef)
-                        },
+                        coef <- function(){return(beta_hat)},
+                        print <- function(){
+                          print.default(format(coef()), print.gap = 2L,quote = FALSE)
+                          cat("\n")
+                          },
                         plot <- function(){
                           require("ggplot2")
-                          return()},
-                        summary <- function(){return()},
-                        resid <- function(){return(resids)},
-                        pred <- function(){return(y_hat)}
+                          require("ggThemeAssist")
+                          return()
+                          },
+                        summary <- function(){
+                          return()
+                          },
+                        resid <- function(){
+                          return(resids)
+                          },
+                        pred <- function(){
+                          return(y_hat)
+                          }
                       )
 )

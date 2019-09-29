@@ -6,6 +6,7 @@ Date: 2019-09-20
 Author: Nastaran Meftahi and Sarah Alsaadi
 Maintainer: <sarah.walid.alsaadi@liu.se>, <nasme581@ad.liu.se>
 Description: More about what it does (maybe more than one line)
+Encoding: UTF-8
 License: MIT
 RoxygenNote: 6.1.1
 Suggests: 
