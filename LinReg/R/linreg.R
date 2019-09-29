@@ -27,8 +27,9 @@ linreg <- setRefClass("linreg",
                           #QR decomposition modified GramS-chmidt
                           #Setting up the Q-matrix
                         
-                          nR <- nrow(X)
-                          pC <- ncol(X)
+                         
+                          nR <- length(y)
+                          pC <- NCOL(X)
                           #Creating the matrix of zeros (for all the data and variables)
                           Q <- matrix(0, nR,pC)
                           #creating the R matrix of size pC*pC
@@ -50,7 +51,7 @@ linreg <- setRefClass("linreg",
                           R = t(Q) %*% X
                           
                           
-                          coef_hat <<- as.matrix(backsolve(R,qb) 
+                          coef_hat <<- as.matrix(backsolve(R,qb)) 
                           y_hat <<- as.vector(x%*%coef_hat)
                           resids <<- as.vector(y-y_hat) #for calculating the summary stat
                           df <<- as.numeric(nrow(x)-ncol(x)) #for calculating the summary stat
