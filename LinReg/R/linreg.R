@@ -24,34 +24,30 @@ linreg <- setRefClass("linreg",
                           X <<- model.matrix(formula, data)
                           #Setting up the dependent variable
                           y <<- data[all.vars(formula)[1]]
-                          #QR decomposition modified GramS-chmidt
+                          #QR decomposition GramS-chmidt
                           #Setting up the Q-matrix
-                        
-                         
-                          nR <- length(y)
-                          pC <- NCOL(X)
+                          n <- nrow(X)
+                          m <- ncol(X)
                           #Creating the matrix of zeros (for all the data and variables)
-                          Q <- matrix(0, nR,pC)
-                          #creating the R matrix of size pC*pC
-                          R <- matrix(0, pC, pC)
-                          #Creating the matrix of residuals
-                          E <- matrix(0, nR,pC)
-                          #matrix of beta0s
-                          E[,1] = X[,1]
-                          
-                          for (iter in 2:ncol(X)) {
-                            E[, iter] = X[, iter]
-                            for (num in seq(1, (iter - 1), 1)) {
-                              E[, iter] = E[, iter] - ((sum(E[, num]*X[, iter]) / 
-                                                          sum(E[, num]*E[, num])) * (E[, num]))
+                          Q <- matrix(0, n,m)
+                          #creating the R matrix of size m*m
+                          R <- matrix(0, m, m)
+                          #Creating the projection matrix
+                          V <- matrix(0, n,m)
+                          V[,1] = X[,1]
+                          for (i in 2:m) {
+                            V[,i]= X[,i]
+                            for (j in seq(1, (i-1),1)) {
+                              #l2 normalization
+                              V[,i] = V[,i] - ((sum(V[,j]*V[,i]) /sum(V[,j]*V[,j])) * (V[, j]))
                               }
                           }
-                          #l2 normalization
-                          Q = apply(E, 2, function(X) { X / sqrt(sum(X*X)) })
-                          R = t(Q) %*% X
-                          yqt = t(Q)%*%y
-                          
+                          Q <- apply(V, 2, function(X) { X / sqrt(sum(X*X)) })
+                          R <- t(Q) %*% X
+                          yqt <- t(Q)%*%y
+                          #finding the betahats
                           coef_hat <<- as.matrix(backsolve(R,yqt)) 
+                          
                           y_hat <<- as.vector(x%*%coef_hat)
                           resids <<- as.vector(y-y_hat) #for calculating the summary stat
                           df <<- as.numeric(nrow(x)-ncol(x)) #for calculating the summary stat
