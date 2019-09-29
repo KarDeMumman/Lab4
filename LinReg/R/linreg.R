@@ -2,19 +2,17 @@ rm(list = ls())
 
 linreg <- setRefClass("linreg",
                       fields  = list(
-                        formula <-"formula",
-                        data <- "data.frame",
-                        X <- "matrix",
-                        y <- "vector",
-                        coef_hat <- "matrix",
-                        y_hat <- "vector",
-                        resids <- "vector",
-                        degfree <- "numeric",
-                        rsqrd <- "numeric",
-                        corrMatrix <- "matrix",
-                        fstat <- "vector",
-                        sigma2 <- "numeric",
-                        variance <- "numeric"
+                        formula ="formula",
+                        data = "data.frame",
+                        X = "matrix",
+                        y = "vector",
+                        coef_hat = "matrix",
+                        y_hat = "vector",
+                        resids = "vector",
+                        degfree = "numeric",
+                        #rsqrd <- "numeric",
+                        sigma2 = "numeric",
+                        variance = "numeric"
                       ), 
                       methods = list(
                         initialize <- function(formula,data){
@@ -56,7 +54,7 @@ linreg <- setRefClass("linreg",
                           degfree <<- as.numeric(nrow(X)-ncol(X)) #for calculating the summary stat
                           sigma2 <<- as.numeric((t(resids)%*%as.matrix(resids))/degfree) #for calculating the summary stat
                           variance <<- as.numeric(sqrt(sigma2),2) #finding the variance
-                          tstat <<- as.vector()
+                          #tstat <<- as.vector()
                           # rsqrd <<- as.numeric() #for calculating the summary stat
                           #corrMatrix <<- as.matrix() #for calculating the summary stat
                         },
