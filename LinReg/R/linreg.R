@@ -6,7 +6,7 @@ linreg <- setRefClass("linreg",
                         data = "data.frame",
                         X = "matrix",
                         y = "vector",
-                        coef_hat = "matrix",
+                        beta_hat = "matrix",
                         y_hat = "vector",
                         resids = "vector",
                         degfree = "numeric",
@@ -30,7 +30,7 @@ linreg <- setRefClass("linreg",
                           n <- nrow(X)
                           m <- ncol(X)
                           #Creating the matrix of zeros (for all the data and variables)
-                          Q <- matrix(0, n,m)
+                          Q <<- matrix(0, n,m)
                           #creating the R matrix of size m*m
                           R <- matrix(0, m, m)
                           #Creating the projection matrix
@@ -57,18 +57,18 @@ linreg <- setRefClass("linreg",
                           sigma2 <<- as.numeric((t(resids)%*%as.matrix(resids))/degfree) #for calculating the summary stat
                           variance <<- as.numeric(sqrt(sigma2))
                           var_beta <<- as.numeric(sigma2 * solve((t(X)%*%X))) #finding the variance
-                          t_value <<- as.vector(beta_hat/(sqrt(diag(var_beta))))
+                          t_value <<- as.numeric(beta_hat/(sqrt(diag(var_beta))))
                           p_value <<- as.numeric(2*pt(-abs(t_value),degfree))#getting the p_values
                         },
                         coef <- function(){return(beta_hat)},
                         print <- function(){
-                          
+                          cat("\n","Call:","\n",paste("linreg(formula = ", format(formula), ", data = ", parse , ")\n\n ", sep = ""))
                           print.default(format(coef()), print.gap = 2L,quote = FALSE)
                           cat("\n")
                           },
                         plot <- function(){
-                          require("ggplot2")
-                          require("ggThemeAssist")
+                          LinReg::require("ggplot2")
+                          LinReg::require("ggThemeAssist")
                           return()
                           },
                         summary <- function(){
