@@ -49,9 +49,9 @@ linreg <- setRefClass("linreg",
                           #l2 normalization
                           Q = apply(E, 2, function(X) { X / sqrt(sum(X*X)) })
                           R = t(Q) %*% X
+                          yqt = t(Q)%*%y
                           
-                          
-                          coef_hat <<- as.matrix(backsolve(R,qb)) 
+                          coef_hat <<- as.matrix(backsolve(R,yqt)) 
                           y_hat <<- as.vector(x%*%coef_hat)
                           resids <<- as.vector(y-y_hat) #for calculating the summary stat
                           df <<- as.numeric(nrow(x)-ncol(x)) #for calculating the summary stat
