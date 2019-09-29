@@ -1,9 +1,6 @@
 rm(list = ls())
 
 linreg <- setRefClass("linreg",
-                      contains = "data", #fill the characteristics of the data here
-                      #what are the inheritence features from the parent calss.
-                      # what types of input the class can inherit. (I think)
                       fields  = list(
                         formula <-"formula",
                         data <- "data.frame",
@@ -22,13 +19,38 @@ linreg <- setRefClass("linreg",
                         initialize <- function(formula,data){
                           #model.matrix
                           stopifnot(is.data.frame(data))
-                          stopifnot(all.vars(formula %in% colnames(data)))
+                          stopifnot(all.vars(formula) %in% colnames(data))
+                          #Setting up the model
                           X <<- model.matrix(formula, data)
-                          y <<- data[all.vars(forumla)[1]]
-                          #solving for the estimation coefficients.
-                          #should be changed to QRd
-                          #for calculating the summary stat and the coefficients 
-                          coef_hat <<- as.matrix(solve(t(x)%*%x)%*%t(x)%*%y) 
+                          #Setting up the dependent variable
+                          y <<- data[all.vars(formula)[1]]
+                          #QR decomposition modified GramS-chmidt
+                          #Setting up the Q-matrix
+                        
+                          nR <- nrow(X)
+                          pC <- ncol(X)
+                          #Creating the matrix of zeros (for all the data and variables)
+                          Q <- matrix(0, nR,pC)
+                          #creating the R matrix of size pC*pC
+                          R <- matrix(0, pC, pC)
+                          #Creating the matrix of residuals
+                          E <- matrix(0, nR,pC)
+                          #matrix of beta0s
+                          E[,1] = X[,1]
+                          
+                          for (iter in 2:ncol(X)) {
+                            E[, iter] = X[, iter]
+                            for (num in seq(1, (iter - 1), 1)) {
+                              E[, iter] = E[, iter] - ((sum(E[, num]*X[, iter]) / 
+                                                          sum(E[, num]*E[, num])) * (E[, num]))
+                              }
+                          }
+                          #l2 normalization
+                          Q = apply(E, 2, function(X) { X / sqrt(sum(X*X)) })
+                          R = t(Q) %*% X
+                          
+                          
+                          coef_hat <<- as.matrix(backsolve(R,qb) 
                           y_hat <<- as.vector(x%*%coef_hat)
                           resids <<- as.vector(y-y_hat) #for calculating the summary stat
                           df <<- as.numeric(nrow(x)-ncol(x)) #for calculating the summary stat
