@@ -9,6 +9,7 @@ linreg <- setRefClass("linreg",
                         beta_hat = "matrix",
                         y_hat = "vector",
                         resids = "vector",
+                        std_res = "vector",
                         degfree = "numeric",
                         sigma2 = "numeric",
                         variance = "numeric",
@@ -53,6 +54,7 @@ linreg <- setRefClass("linreg",
                           names(beta_hat) <<- colnames(X) 
                           y_hat <<- as.vector(X%*%beta_hat)
                           resids <<- as.vector(y-y_hat) #for calculating the summary stat
+                          std_res <<- as.vector(abs(scale(resids))) #standardized residuals
                           degfree <<- as.numeric(nrow(X)-ncol(X)) #for calculating the summary stat
                           sigma2 <<- as.numeric((t(resids)%*%as.matrix(resids))/degfree) #for calculating the summary stat
                           variance <<- as.numeric(sqrt(sigma2))
@@ -67,9 +69,43 @@ linreg <- setRefClass("linreg",
                           cat("\n")
                           },
                         plot <- function(){
+                          #The required packages for plotting and setting up the 
+                          #background image
                           LinReg::require("ggplot2")
-                          LinReg::require("ggThemeAssist")
-                          return()
+                          LinReg::require("png")
+                          plt_theme <- theme(
+                            
+                            plot.background = element_rect(fill = '#b8f5f9'),    # Background of the entire plot
+                            
+                            panel.background = element_rect(fill = '#54f4ff'),   # Background of plotting area
+                            panel.border = element_rect(colour = "#c2c8d6", fill = NA),       # Border around plotting area.
+                            # fill argument should be NA
+                            panel.grid.major = element_line(size = 0.5, linetype = 'solid',
+                                                            colour = "white"),   # Major grid lines
+                            panel.grid.minor = element_line(size = 0.25, linetype = 'solid',
+                                                            colour = "white"),   # Minor grid lines
+                            axis.line = element_line(colour = "black") 
+                          )
+                          
+                          liu_logo <- png::readPNG("LiU_primary_white.png")
+                          dat1 <- data.frame(y_hat, resids)
+                          pl1<-ggplot(dat1, aes(y_hat, resids))+
+                          geom_point()+
+                          geom_smooth(method="lm", na.rm=TRUE, color="blue")+
+                          xlab(paste("Fitted Values"))+
+                          ylab("Residuals")+
+                          ggtitle("Residuals vs Fitted Plot")+
+                            plt_theme
+                          
+                          dat2 <- data.frame(y_hat, std_res)
+                          pl2<-ggplot(dat, aes(y_hat, std_res))+
+                            geom_point()+
+                            geom_smooth(method="lm", na.rm=TRUE, color="blue")+
+                            xlab(paste("Fitted Values"))+
+                            ylab("Residuals")+
+                            ggtitle("Standardized Residuals vs Fitted Plot")+
+                            plt_theme
+                          return(list(pl1,pl2))
                           },
                         summary <- function(){
                           return()
