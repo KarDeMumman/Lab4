@@ -108,7 +108,25 @@ linreg <- setRefClass("linreg",
                           return(list(pl1,pl2))
                           },
                         summary <- function(){
-                          return()
+                          cat("linreg(formula = ", 
+                              format(formula), ", data = ", parse,
+                              ") :\n\n ", sep = "")
+                          summ_stat <- matrix(NA,nrow = 6)
+                          summ_stat[,1] <- beta_hat
+                          summ_stat[,2] <- var_beta
+                          summ_stat[,3] <- t_value
+                          summ_stat[,4] <- p_value
+                          summ_stat[,5] <- deg_free
+                          summ_stat[,6] <-for (i in 1:length(p_value)){
+                            if (p_value[i]<0.001) significance[i]<-"***"
+                            else if (p_value[i]<0.01) significance[i]<-"**"
+                            else if (p_value[i]<0.05) significance[i]<-"*"
+                            else if (p_value[i]<0.1) significance[i]<-"."
+                            else significance[i]<-" "
+                          }
+                          colnames(summ_stat) <- c("Estimated values", "Standard Error of Estimates", "t_value", "Pr(>|t|)", "degrees of freedom", "significance")
+                          cat(paste(summ_stat),"\n",
+                              sep="\n")
                           },
                         resid <- function(){
                           return(resids)
