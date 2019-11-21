@@ -9,12 +9,12 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 ```{r}
-require("lab4");
+require("LinReg");
 require("ggplot2");
 require("magick");
 require("png");
-linreg<-linreg$new(formula=Petal.Length ~ Species,data=iris)
-linreg$print()
+linreg_mod<-linreg$new(formula=Petal.Length ~ Species,data=iris)
+linreg_mod$print()
 ```
 
 # Linear regression
