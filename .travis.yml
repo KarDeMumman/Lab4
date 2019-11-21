@@ -1,6 +1,6 @@
 language: r
 cache: packages
 install:
-  - Rscript -e 'install.packages(c("devtools","roxygen2","testthat", "knitr"));devtools::install_deps("LinReg")'
+  - Rscript -e 'install.packages(c("devtools","roxygen2","testthat", "knitr", "rmarkdown"));devtools::install_deps("LinReg")'
 script:
   - Rscript -e 'devtools::check("LinReg")'
