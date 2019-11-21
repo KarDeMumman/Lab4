@@ -8,7 +8,7 @@ Maintainer: <sarah.walid.alsaadi@liu.se>, <nasme581@ad.liu.se>
 Description: The package performs linear regression.
 Encoding: UTF-8
 License: MIT
-RoxygenNote: 7.0.0
+RoxygenNote: 6.1.1
 Imports: ggplot2, dplyr, magrittr
-Suggests: testthat,knitr,rmarkdown, caret,mlbench, nycflights13, MASS,leaps,magrittr
+Suggests: testthat, knitr, rmarkdown
 VignetteBuilder: knitr

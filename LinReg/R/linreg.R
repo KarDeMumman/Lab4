@@ -20,7 +20,6 @@ rm(list = ls())
 # exportClass 
 
 
-
 linreg <- setRefClass(Class = "linreg",
                       
                       fields  = list(
@@ -151,6 +150,10 @@ linreg <- setRefClass(Class = "linreg",
                         }
                       )
 )
+
+#' Significance
+#' Helper function to encode significance based on a given p_value
+#' @param p_value The given p_value
 significance <- function(p_value) {
   significance <- ifelse(p_value < 0.001, "***",
                          ifelse(p_value < 0.01, "**",
@@ -158,6 +161,10 @@ significance <- function(p_value) {
                                         (ifelse(p_value < 0.1, "."," "))))))
   return(significance)
 }
+
+#' Tabl
+#' Helper function to print a given result
+#' @param result The result to print
 tabl<-function(result){
   print(result)
 }
